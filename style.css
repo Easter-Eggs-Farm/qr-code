@@ -13,6 +13,11 @@
 
 body {
   margin: 0;
+  /* Colonne pleine hauteur : le pied de page reste en bas de l'ecran
+     meme quand le contenu est court. 100dvh suit la barre d'URL mobile. */
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
   padding: 1.5rem 1.25rem;
   background: var(--coquille);
   color: var(--encre);
@@ -20,8 +25,24 @@ body {
   line-height: 1.5;
 }
 
-.app { max-width: 420px; margin: 0 auto; }
+.app {
+  max-width: 420px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 .hidden { display: none !important; }
+
+/* Chaque ecran occupe la hauteur disponible. L'accueil centre son contenu
+   verticalement ; l'ecran de paiement reste en haut, son contenu etant plus long. */
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+#screen-home { justify-content: center; }
 
 .qr { display: block; width: 96px; margin: 0 auto 1rem; opacity: 0.85; }
 
@@ -107,7 +128,9 @@ h2 { font-size: 1rem; color: var(--gris); margin: 1.75rem 0 0.75rem; font-weight
 .warning { color: var(--rouge); text-align: center; font-size: 0.9rem; }
 
 .footer {
-  margin-top: 3rem;
+  /* Pousse le pied de page en bas de la colonne. */
+  margin-top: auto;
+  padding-top: 3rem;
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 0.8rem;
   color: var(--gris);
