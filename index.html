@@ -10,15 +10,70 @@
 <main class="app">
 
   <section id="screen-home" class="screen">
-    <svg class="mark" viewBox="0 0 64 64" role="img" aria-label="Un oeuf">
-      <path d="M32 5 C45 5 56 23 56 38 C56 52 45 60 32 60 C19 60 8 52 8 38 C8 23 19 5 32 5 Z"
-            fill="none" stroke="currentColor" stroke-width="2.5"/>
+    <!-- Poule en pixel art facon sprite de jeu : une rangee de pixels par rect.
+         Elle trottine et pond des points derriere elle, en boucle. -->
+    <svg class="mark" viewBox="0 0 80 96" role="img" aria-label="Une poule qui pond des oeufs" preserveAspectRatio="xMidYMax meet">
+      <g fill="currentColor">
+        <g class="hen">
+          <!-- crete : deux bosses -->
+          <rect x="56" y="0"  width="4"  height="4"/>
+          <rect x="64" y="0"  width="4"  height="4"/>
+          <rect x="52" y="4"  width="16" height="4"/>
+          <!-- tete : arrondie sur ses quatre coins, pas un bloc -->
+          <rect x="52" y="8"  width="16" height="4"/>
+          <rect x="48" y="12" width="24" height="4"/>
+          <rect x="48" y="16" width="24" height="4"/>
+          <rect x="48" y="20" width="24" height="4"/>
+          <rect x="52" y="24" width="16" height="4"/>
+          <!-- bec : court et pointu, deux paliers degressifs -->
+          <rect x="72" y="16" width="8"  height="4"/>
+          <rect x="72" y="20" width="4"  height="4"/>
+          <!-- barbillon, sous le bec -->
+          <rect x="64" y="28" width="4"  height="4"/>
+          <!-- cou : part exactement de la largeur du bas de la tete -->
+          <rect x="52" y="28" width="12" height="4"/>
+          <rect x="48" y="32" width="16" height="4"/>
+          <rect x="44" y="36" width="20" height="4"/>
+          <rect x="36" y="40" width="32" height="4"/>
+          <rect x="28" y="44" width="40" height="4"/>
+          <!-- queue : trois plumes distinctes, separees par un vide -->
+          <rect x="8"  y="28" width="12" height="4"/>
+          <rect x="4"  y="36" width="16" height="4"/>
+          <rect x="0"  y="44" width="20" height="4"/>
+          <!-- corps : le bord droit avance puis rentre, pour galber le poitrail
+               au lieu de le laisser tomber a la verticale sous la tete. -->
+          <rect x="8"  y="48" width="60" height="4"/>
+          <rect x="8"  y="52" width="60" height="4"/>
+          <rect x="4"  y="56" width="64" height="4"/>
+          <rect x="4"  y="60" width="64" height="4"/>
+          <rect x="8"  y="64" width="56" height="4"/>
+          <rect x="12" y="68" width="48" height="4"/>
+          <rect x="16" y="72" width="40" height="4"/>
+          <rect x="24" y="76" width="24" height="4"/>
+          <!-- oeil, et aile creusee en amande -->
+          <rect class="knock" x="60" y="16" width="4"  height="4"/>
+          <rect class="knock" x="16" y="56" width="32" height="4"/>
+          <rect class="knock" x="24" y="60" width="20" height="4"/>
+        </g>
+        <!-- pattes : rapprochees, trois pixels d'ecart -->
+        <rect class="leg-a" x="28" y="80" width="4" height="12"/>
+        <rect class="leg-b" x="40" y="80" width="4" height="12"/>
+        <rect class="foot-a" x="24" y="92" width="12" height="4"/>
+        <rect class="foot-b" x="36" y="92" width="12" height="4"/>
+
+        <!-- Les oeufs pondus : de simples points, poses au sol. -->
+        <rect class="egg egg-1" x="4" y="92" width="4" height="4"/>
+        <rect class="egg egg-2" x="4" y="92" width="4" height="4"/>
+        <rect class="egg egg-3" x="4" y="92" width="4" height="4"/>
+      </g>
     </svg>
+    <div class="ground" aria-hidden="true"></div>
     <h1>Easter Eggs</h1>
     <p class="subtitle"># des oeufs pondus en localhost</p>
 
-    <a id="btn-website" class="btn btn-secondary" href="#" target="_blank" rel="noopener">
-      Voir le site
+    <a id="btn-website" class="btn btn-secondary" role="button" tabindex="0"
+       aria-disabled="true" target="_blank" rel="noopener">
+      Site bientot disponible
     </a>
     <button id="btn-goto-pay" class="btn btn-primary" type="button">
       Payer mes oeufs

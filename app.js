@@ -33,9 +33,14 @@ function setupHome() {
   const website = el("btn-website");
   if (isWebsiteConfigured(CONFIG)) {
     website.href = CONFIG.websiteUrl;
+    website.textContent = "Voir le site";
+    website.removeAttribute("aria-disabled");
   } else {
-    // Le site n'existe pas encore : on masque plutot que d'offrir un lien mort.
-    website.classList.add("hidden");
+    // Le site n'existe pas encore. On garde le bouton visible pour annoncer
+    // qu'il arrive, mais sans href : pas de lien mort.
+    website.removeAttribute("href");
+    website.setAttribute("aria-disabled", "true");
+    website.textContent = "Site bientot disponible";
   }
 
   el("btn-goto-pay").addEventListener("click", () => showScreen("pay"));

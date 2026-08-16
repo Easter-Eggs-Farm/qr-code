@@ -12,7 +12,7 @@ Tout se passe dans `config.js` — c'est le seul fichier a editer.
 
 | Champ | Role |
 |---|---|
-| `websiteUrl` | Site de la ferme. Tant qu'il vaut `https://example.com`, le bouton "Voir le site" est masque. |
+| `websiteUrl` | Site de la ferme. Tant qu'il vaut `https://example.com`, le bouton reste affiche mais desactive, libelle "Site bientot disponible". Des qu'une vraie URL est mise, il devient "Voir le site" et cliquable. |
 | `pricePerBox` | Prix d'une boite, en euros. |
 | `boxSize` | Nombre d'oeufs par boite. |
 | `maxQuantity` | Nombre maximum de boites commandables. |
