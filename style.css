@@ -71,11 +71,15 @@ body {
 
 /* --- Accueil ---------------------------------------------------------- */
 
-.qr {
+/* Oeuf dessine en SVG plutot qu'en image : net a toute taille, suit la
+   couleur du theme, et rien a telecharger. */
+.mark {
   display: block;
-  width: 52px;
-  margin: 0 auto 1.75rem;
-  opacity: 0.4;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 1.5rem;
+  color: var(--vert);
+  opacity: 0.8;
 }
 
 h1 {
