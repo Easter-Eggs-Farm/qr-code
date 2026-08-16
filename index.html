@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oeufs bio de la ferme</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+
+  <section id="screen-home" class="screen">
+    <img class="qr" src="assets/qr-code-egg.png" alt="QR code en forme d'oeuf">
+    <h1>Oeufs bio de la ferme</h1>
+    <p class="subtitle">Pondus a quelques metres d'ici.</p>
+
+    <a id="btn-website" class="btn btn-secondary" href="#" target="_blank" rel="noopener">
+      Voir le site
+    </a>
+    <button id="btn-goto-pay" class="btn btn-primary" type="button">
+      Payer mes oeufs
+    </button>
+
+    <p class="price-note" id="price-note"></p>
+  </section>
+
+  <section id="screen-pay" class="screen hidden">
+    <button id="btn-back" class="btn-back" type="button" aria-label="Retour">&larr; Retour</button>
+
+    <h2>A qui payez-vous ?</h2>
+    <div id="sellers" class="sellers"></div>
+
+    <h2>Combien de boites ?</h2>
+    <div class="qty">
+      <button id="qty-minus" class="qty-btn" type="button" aria-label="Une boite de moins">&minus;</button>
+      <span id="qty-value" class="qty-value">1</span>
+      <button id="qty-plus" class="qty-btn" type="button" aria-label="Une boite de plus">+</button>
+    </div>
+
+    <p id="summary" class="summary"></p>
+    <p id="pay-warning" class="warning hidden">Paiement pas encore configure.</p>
+
+    <a id="btn-pay" class="btn btn-primary" href="#" target="_blank" rel="noopener">Payer</a>
+  </section>
+
+  <footer class="footer">eggs.sh &mdash; 100% bio, 0% bug</footer>
+</main>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
