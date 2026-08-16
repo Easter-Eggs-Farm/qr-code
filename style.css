@@ -1,12 +1,35 @@
+/* Oeufs bio de la ferme — feuille de style unique.
+   Parti pris : une page qui se lit comme un README bien tenu.
+   Sans-serif pour le titre, monospace pour toute donnee (prix, quantite,
+   total, labels). Traits fins, beaucoup de blanc, un seul accent vert. */
+
 :root {
-  --coquille: #f6f1e7;
-  --paille: #e3d5b8;
-  --encre: #2f2a24;
-  --vert: #2f5d3a;
-  --vert-clair: #4a8159;
-  --gris: #7c7468;
-  --rouge: #9b3b2f;
-  --radius: 14px;
+  --fond: #faf8f4;        /* coquille */
+  --surface: #ffffff;
+  --encre: #23201c;
+  --gris: #8a8377;
+  --trait: #e4dece;       /* paille, en filet */
+  --vert: #1f4d33;
+  --vert-tint: #eef3ee;
+  --rouge: #8f3a2c;
+
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --radius: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fond: #16150f;
+    --surface: #1e1c16;
+    --encre: #ece7dc;
+    --gris: #918a7c;
+    --trait: #322e25;
+    --vert: #8fc9a3;
+    --vert-tint: #1d2a21;
+    --rouge: #d98878;
+  }
 }
 
 * { box-sizing: border-box; }
@@ -18,21 +41,23 @@ body {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  padding: 1.5rem 1.25rem;
-  background: var(--coquille);
+  padding: 1.75rem 1.25rem 1.25rem;
+  background: var(--fond);
   color: var(--encre);
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--sans);
   line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
 .app {
-  max-width: 420px;
-  margin: 0 auto;
   width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
   flex: 1;
   display: flex;
   flex-direction: column;
 }
+
 .hidden { display: none !important; }
 
 /* Chaque ecran occupe la hauteur disponible. L'accueil centre son contenu
@@ -44,95 +69,192 @@ body {
 }
 #screen-home { justify-content: center; }
 
-.qr { display: block; width: 96px; margin: 0 auto 1rem; opacity: 0.85; }
+/* --- Accueil ---------------------------------------------------------- */
 
-h1 { font-size: 1.6rem; text-align: center; margin: 0 0 0.25rem; }
-h2 { font-size: 1rem; color: var(--gris); margin: 1.75rem 0 0.75rem; font-weight: 600; }
-.subtitle { text-align: center; color: var(--gris); margin: 0 0 2rem; }
+.qr {
+  display: block;
+  width: 52px;
+  margin: 0 auto 1.75rem;
+  opacity: 0.4;
+}
+
+h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.7rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+/* Sous-titre en commentaire de code : le clin d'oeil geek, discret. */
+.subtitle {
+  margin: 0 0 2.5rem;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--gris);
+  text-align: center;
+}
+
+.price-note {
+  margin: 1.25rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--gris);
+  text-align: center;
+}
+
+/* --- Boutons ---------------------------------------------------------- */
 
 .btn {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  min-height: 56px;
-  padding: 1rem;
-  margin-bottom: 0.75rem;
-  border: 2px solid var(--vert);
+  min-height: 54px;
+  padding: 0.875rem 1rem;
+  margin-bottom: 0.625rem;
+  border: 1px solid transparent;
   border-radius: var(--radius);
-  font-size: 1.05rem;
-  font-weight: 600;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
+  transition: opacity 0.15s ease;
 }
 
-.btn-primary { background: var(--vert); color: var(--coquille); }
-.btn-secondary { background: transparent; color: var(--vert); }
+.btn-primary {
+  background: var(--vert);
+  color: var(--fond);
+}
+
+.btn-secondary {
+  background: var(--surface);
+  border-color: var(--trait);
+  color: var(--encre);
+}
+
+.btn:active { opacity: 0.75; }
+
 .btn[aria-disabled="true"], .btn:disabled {
-  opacity: 0.4;
+  background: transparent;
+  border-color: var(--trait);
+  color: var(--gris);
   pointer-events: none;
 }
 
 .btn-back {
-  background: none; border: none; padding: 0.5rem 0 1rem;
-  color: var(--gris); font-size: 0.95rem; cursor: pointer;
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 0 0.25rem;
+  margin-bottom: 0.5rem;
+  background: none;
+  border: none;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--gris);
+  cursor: pointer;
 }
 
-.price-note { text-align: center; color: var(--gris); font-size: 0.9rem; }
+/* --- Ecran de paiement ------------------------------------------------ */
 
-.sellers { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+/* Labels de section en monospace bas-de-casse, comme des cles de config. */
+h2 {
+  margin: 1.75rem 0 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--gris);
+}
+
+.sellers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
+}
 
 .seller {
-  min-height: 64px;
+  min-height: 60px;
   padding: 1rem 0.5rem;
-  background: #fff;
-  border: 2px solid var(--paille);
+  background: var(--surface);
+  border: 1px solid var(--trait);
   border-radius: var(--radius);
-  font-size: 1rem;
-  font-weight: 600;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
   color: var(--encre);
   cursor: pointer;
 }
+
 .seller[aria-pressed="true"] {
   border-color: var(--vert);
-  background: var(--vert-clair);
-  color: var(--coquille);
+  background: var(--vert-tint);
+  color: var(--vert);
+  box-shadow: inset 0 0 0 1px var(--vert);
 }
 
-.qty { display: flex; align-items: center; justify-content: center; gap: 1.5rem; }
+.seller:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.qty {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 220px;
+  margin: 0 auto;
+}
 
 .qty-btn {
-  width: 56px; height: 56px;
-  background: #fff;
-  border: 2px solid var(--paille);
+  width: 48px;
+  height: 48px;
+  background: var(--surface);
+  border: 1px solid var(--trait);
   border-radius: 50%;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   color: var(--encre);
   cursor: pointer;
 }
-.qty-btn:disabled { opacity: 0.35; cursor: default; }
+
+.qty-btn:disabled { opacity: 0.3; cursor: default; }
 
 .qty-value {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-family: var(--mono);
   font-size: 2rem;
-  min-width: 2.5rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 3rem;
   text-align: center;
 }
 
 .summary {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 1.35rem;
+  margin: 1.75rem 0 1.25rem;
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
   text-align: center;
-  margin: 1.5rem 0;
 }
 
-.warning { color: var(--rouge); text-align: center; font-size: 0.9rem; }
+.warning {
+  margin: 0 0 1rem;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--rouge);
+  text-align: center;
+}
+
+/* --- Pied de page ----------------------------------------------------- */
 
 .footer {
   /* Pousse le pied de page en bas de la colonne. */
   margin-top: auto;
-  padding-top: 3rem;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.8rem;
+  padding-top: 2.5rem;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
   color: var(--gris);
   text-align: center;
+  opacity: 0.7;
 }
