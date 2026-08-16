@@ -30,8 +30,8 @@
   <section id="screen-pay" class="screen hidden">
     <button id="btn-back" class="btn-back" type="button" aria-label="Retour">&larr; retour</button>
 
-    <h2>vendeur</h2>
-    <div id="sellers" class="sellers"></div>
+    <h2 id="sellers-heading">vendeur</h2>
+    <div id="sellers" class="sellers" role="group" aria-labelledby="sellers-heading"></div>
 
     <h2>quantite</h2>
     <div class="qty">
@@ -40,10 +40,10 @@
       <button id="qty-plus" class="qty-btn" type="button" aria-label="Une boite de plus">+</button>
     </div>
 
-    <p id="summary" class="summary"></p>
+    <p id="summary" class="summary" aria-live="polite"></p>
     <p id="pay-warning" class="warning hidden">Paiement pas encore configure.</p>
 
-    <a id="btn-pay" class="btn btn-primary" href="#" target="_blank" rel="noopener">Payer</a>
+    <a id="btn-pay" class="btn btn-primary" role="button" tabindex="0" aria-disabled="true" target="_blank" rel="noopener">Choisissez un vendeur</a>
   </section>
 
   <footer class="footer">eggs.sh &mdash; 100% bio, 0% bug</footer>

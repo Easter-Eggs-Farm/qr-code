@@ -5,6 +5,7 @@ import {
   buildPaypalUrl,
   isSellerConfigured,
   isWebsiteConfigured,
+  validateConfig,
 } from "./logic.js";
 
 const el = (id) => document.getElementById(id);
@@ -13,11 +14,21 @@ const el = (id) => document.getElementById(id);
 let selectedSeller = null;
 let quantity = 1;
 
+// Config invalide (prix pas un nombre, quantite max manquante, etc.) : on
+// n'essaie surtout pas de "reparer" a la volee, on affiche l'erreur et on
+// bloque le paiement.
+const configErrors = validateConfig(CONFIG);
+const configValid = configErrors.length === 0;
+
 // --- Ecran d'accueil ---------------------------------------------------
 
 function setupHome() {
-  el("price-note").textContent =
-    `${formatDisplayAmount(CONFIG.pricePerBox)} la boite de ${CONFIG.boxSize}`;
+  if (!configValid) {
+    el("price-note").textContent = "Configuration invalide, voir un administrateur.";
+  } else {
+    el("price-note").textContent =
+      `${formatDisplayAmount(CONFIG.pricePerBox)} la boite de ${CONFIG.boxSize}`;
+  }
 
   const website = el("btn-website");
   if (isWebsiteConfigured(CONFIG)) {
@@ -40,6 +51,13 @@ function showScreen(name) {
 // --- Vendeurs ----------------------------------------------------------
 
 function setupSellers() {
+  if (!configValid) {
+    el("pay-warning").textContent =
+      "Configuration invalide, voir un administrateur.";
+    el("pay-warning").classList.remove("hidden");
+    return;
+  }
+
   const container = el("sellers");
 
   for (const seller of CONFIG.sellers) {
@@ -53,8 +71,15 @@ function setupSellers() {
     container.appendChild(btn);
   }
 
-  // Si aucun vendeur n'a de vrai pseudo PayPal, on le dit explicitement.
-  if (!CONFIG.sellers.some(isSellerConfigured)) {
+  const configuredCount = CONFIG.sellers.filter(isSellerConfigured).length;
+
+  if (configuredCount === 0) {
+    // Aucun vendeur n'a de vrai pseudo PayPal.
+    el("pay-warning").classList.remove("hidden");
+  } else if (configuredCount < CONFIG.sellers.length) {
+    // Au moins un vendeur est encore un placeholder.
+    el("pay-warning").textContent =
+      "Certains vendeurs ne sont pas encore disponibles.";
     el("pay-warning").classList.remove("hidden");
   }
 }
@@ -76,6 +101,7 @@ function setupQuantity() {
 }
 
 function changeQuantity(delta) {
+  if (!configValid) return;
   quantity = Math.min(CONFIG.maxQuantity, Math.max(1, quantity + delta));
   render();
 }
@@ -83,6 +109,15 @@ function changeQuantity(delta) {
 // --- Rendu -------------------------------------------------------------
 
 function render() {
+  if (!configValid) {
+    // Config cassee : jamais de montant, jamais de lien PayPal.
+    const payBtn = el("btn-pay");
+    payBtn.removeAttribute("href");
+    payBtn.textContent = "Choisissez un vendeur";
+    payBtn.setAttribute("aria-disabled", "true");
+    return;
+  }
+
   el("qty-value").textContent = String(quantity);
   el("qty-minus").disabled = quantity <= 1;
   el("qty-plus").disabled = quantity >= CONFIG.maxQuantity;
@@ -106,7 +141,23 @@ function render() {
   }
 }
 
-setupHome();
-setupSellers();
-setupQuantity();
-render();
+try {
+  setupHome();
+  setupSellers();
+  setupQuantity();
+  render();
+} catch (err) {
+  // Filet de securite : quoi qu'il arrive, le bouton payer reste bloque.
+  // (voir aussi l'etat par defaut de #btn-pay dans index.html)
+  console.error("Erreur d'initialisation :", err);
+  const payBtn = el("btn-pay");
+  if (payBtn) {
+    payBtn.removeAttribute("href");
+    payBtn.setAttribute("aria-disabled", "true");
+  }
+  const warning = el("pay-warning");
+  if (warning) {
+    warning.textContent = "Configuration invalide, voir un administrateur.";
+    warning.classList.remove("hidden");
+  }
+}

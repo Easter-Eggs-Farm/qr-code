@@ -21,9 +21,22 @@ export const PLACEHOLDERS = {
   paypalPrefix: "PSEUDO_PAYPAL_",
 };
 
+/**
+ * Normalise un pseudo PayPal saisi a la main : enleve un "@" ou un prefixe
+ * "paypal.me/" en tete, et les espaces superflus. N'encode PAS l'URL.
+ */
+export function normalizePaypalHandle(raw) {
+  let handle = String(raw ?? "").trim();
+  if (handle.startsWith("@")) {
+    handle = handle.slice(1);
+  }
+  handle = handle.replace(/^https:\/\/paypal\.me\//i, "").replace(/^paypal\.me\//i, "");
+  return handle.trim();
+}
+
 /** Vrai si le vendeur a un vrai pseudo PayPal, pas un placeholder. */
 export function isSellerConfigured(seller) {
-  const pseudo = seller?.paypalMe ?? "";
+  const pseudo = normalizePaypalHandle(seller?.paypalMe ?? "");
   return pseudo.length > 0 && !pseudo.startsWith(PLACEHOLDERS.paypalPrefix);
 }
 
@@ -42,5 +55,34 @@ export function buildPaypalUrl(seller, quantity, config) {
     throw new Error(`Vendeur non configure : ${seller?.id ?? "inconnu"}`);
   }
   const total = computeTotal(quantity, config.pricePerBox);
-  return `https://paypal.me/${seller.paypalMe}/${formatAmount(total)}${config.currency}`;
+  const handle = encodeURIComponent(normalizePaypalHandle(seller.paypalMe));
+  return `https://paypal.me/${handle}/${formatAmount(total)}${config.currency}`;
+}
+
+/**
+ * Verifie les champs de config.js qui influencent directement le montant paye.
+ * Retourne un tableau d'erreurs (vide = config valide). Ne lance jamais
+ * d'exception : c'est a l'appelant de decider quoi faire d'une config invalide.
+ */
+export function validateConfig(config) {
+  const errors = [];
+  const c = config ?? {};
+
+  if (typeof c.pricePerBox !== "number" || !Number.isFinite(c.pricePerBox) || c.pricePerBox <= 0) {
+    errors.push("pricePerBox doit etre un nombre positif");
+  }
+  if (!Number.isInteger(c.maxQuantity) || c.maxQuantity <= 0) {
+    errors.push("maxQuantity doit etre un entier positif");
+  }
+  if (!Number.isInteger(c.boxSize) || c.boxSize <= 0) {
+    errors.push("boxSize doit etre un entier positif");
+  }
+  if (typeof c.currency !== "string" || c.currency.length === 0) {
+    errors.push("currency doit etre une chaine non vide");
+  }
+  if (!Array.isArray(c.sellers) || c.sellers.length === 0) {
+    errors.push("sellers doit etre un tableau non vide");
+  }
+
+  return errors;
 }
