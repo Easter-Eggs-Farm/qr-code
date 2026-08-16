@@ -28,9 +28,8 @@ jobs:
         with:
           node-version: 22
 
-      - name: Tests de la logique
-        run: npm test
-
+      # La generation vient AVANT les tests : ceux-ci importent config.js pour
+      # verifier que la configuration reellement deployee est valide.
       - name: Generer config.js depuis les secrets
         env:
           PAYPAL_HANDLE_1: ${{ secrets.PAYPAL_HANDLE_1 }}
@@ -39,6 +38,9 @@ jobs:
           SELLER_NAME_2: ${{ secrets.SELLER_NAME_2 }}
           WEBSITE_URL: ${{ secrets.WEBSITE_URL }}
         run: node scripts/build-config.mjs
+
+      - name: Tests de la logique et de la config generee
+        run: npm test
 
       - uses: actions/upload-pages-artifact@v3
         with:
