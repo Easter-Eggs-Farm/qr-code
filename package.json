@@ -1,0 +1,9 @@
+{
+  "name": "qr-code-eggs",
+  "version": "1.0.0",
+  "description": "Landing page scannee depuis le QR code des boites d'oeufs",
+  "type": "module",
+  "scripts": {
+    "test": "node --test 'test/**/*.test.js'"
+  }
+}
