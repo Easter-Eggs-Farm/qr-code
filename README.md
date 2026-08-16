@@ -40,7 +40,27 @@ Il n'est pas utilise par la page elle-meme.
 
 ## Configurer
 
-Tout se passe dans `config.js` — c'est le seul fichier a editer.
+`config.js` **n'est pas versionne** : il contient les pseudos PayPal, qu'on
+garde hors du depot. Le fichier versionne est `config.example.js`, qui sert de
+modele.
+
+En local, une seule fois :
+
+```bash
+cp config.example.js config.js
+# puis renseigner les vraies valeurs dans config.js
+```
+
+En production, `config.js` est genere automatiquement au deploiement a partir
+du modele et des Secrets du depot (voir la section Deployer).
+
+> A savoir : ceci protege le **depot**, pas la page. Un site statique doit
+> connaitre l'adresse `paypal.me/...` pour y envoyer l'acheteur : elle est donc
+> forcement lisible dans la page publiee. Ce qu'on evite ici, c'est que les
+> pseudos soient indexes par les moteurs de recherche et graves dans
+> l'historique Git.
+
+Les champs :
 
 | Champ | Role |
 |---|---|
@@ -72,13 +92,37 @@ npm test
 
 ## Deployer
 
-1. Pousser sur `main`.
-2. Dans les reglages GitHub du repo : Pages -> Source = branche `main`,
-   dossier `/ (root)`.
+Le deploiement est automatique : tout push sur `main` declenche le workflow
+`.github/workflows/deploy.yml`, qui lance les tests, genere `config.js` a
+partir des Secrets, puis publie sur GitHub Pages.
+
+### A faire une seule fois
+
+1. **Settings -> Pages -> Source : GitHub Actions** (et non "Deploy from a
+   branch").
+2. **Settings -> Secrets and variables -> Actions -> New repository secret**,
+   creer :
+
+   | Secret | Contenu | Requis |
+   |---|---|---|
+   | `PAYPAL_HANDLE_1` | Pseudo PayPal du premier vendeur | oui |
+   | `PAYPAL_HANDLE_2` | Pseudo PayPal du second vendeur | oui |
+   | `SELLER_NAME_1` | Prenom affiche du premier vendeur | oui |
+   | `SELLER_NAME_2` | Prenom affiche du second vendeur | oui |
+   | `WEBSITE_URL` | URL du site de la ferme | non, tant qu'il n'existe pas |
+
+   Si un secret requis manque, le deploiement echoue au lieu de publier une
+   page ou personne ne peut payer.
+
 3. Recuperer l'URL `github.io` obtenue, et la mettre comme destination du QR
-   code dynamique dans QRCodeChimp (lien ci-dessus).
+   code dynamique dans QRCodeChimp (lien plus haut).
 
 Le QR code imprime n'est jamais modifie : seule la destination change.
+
+### Changer un prix
+
+Le prix n'est pas un secret : il vit dans `config.example.js`. On le modifie,
+on pousse sur `main`, et le deploiement le reprend.
 
 ## Structure
 
@@ -86,9 +130,11 @@ Le QR code imprime n'est jamais modifie : seule la destination change.
 |---|---|
 | `index.html` | Les deux ecrans (accueil et paiement) et le sprite de la poule. |
 | `style.css` | Theme, mise en page, animations du sprite. |
-| `config.js` | Prix, vendeurs, URL du site. Le seul fichier a editer. |
+| `config.example.js` | Modele de configuration, versionne. Prix et reglages non sensibles. |
+| `config.js` | Configuration reelle, **non versionnee**. Locale, ou generee au deploiement. |
+| `scripts/build-config.mjs` | Genere `config.js` depuis le modele et les Secrets. |
+| `.github/workflows/deploy.yml` | Tests, generation de config, publication sur Pages. |
 | `logic.js` | Fonctions pures : calcul du total, URL PayPal, validation de config. Sans DOM, testable. |
 | `app.js` | Cablage de l'interface. Le seul fichier qui touche au DOM. |
 | `test/logic.test.js` | Tests de la logique liee a l'argent. |
 | `assets/qr-code-egg.png` | Artwork du QR a imprimer sur les boites. |
-| `docs/superpowers/` | Conception et plan d'implementation. |

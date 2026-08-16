@@ -1,0 +1,55 @@
+name: Deployer sur GitHub Pages
+
+# Le depot ne contient pas config.js : il est genere ici a partir de
+# config.example.js et des Secrets, puis publie avec le reste du site.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Un seul deploiement a la fois, sans annuler celui en cours.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Tests de la logique
+        run: npm test
+
+      - name: Generer config.js depuis les secrets
+        env:
+          PAYPAL_HANDLE_1: ${{ secrets.PAYPAL_HANDLE_1 }}
+          PAYPAL_HANDLE_2: ${{ secrets.PAYPAL_HANDLE_2 }}
+          SELLER_NAME_1: ${{ secrets.SELLER_NAME_1 }}
+          SELLER_NAME_2: ${{ secrets.SELLER_NAME_2 }}
+          WEBSITE_URL: ${{ secrets.WEBSITE_URL }}
+        run: node scripts/build-config.mjs
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - id: deploiement
+        uses: actions/deploy-pages@v4
