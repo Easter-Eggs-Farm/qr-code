@@ -82,7 +82,7 @@
       "Bash(rtk git branch *)",
       "Bash(rtk git add *)",
       "Bash(rtk git commit *)",
-      "Bash(npm test *)",
+      "Bash(rtk npm test *)",
       "Bash(rtk npx tsc --noEmit *)",
       "Bash(rtk npx prettier --check *)",
       "Bash(rtk gh pr view *)",
