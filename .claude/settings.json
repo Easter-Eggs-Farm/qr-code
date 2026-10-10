@@ -111,5 +111,7 @@
         ]
       }
     ]
-  }
+  },
+  "model": "haiku",
+  "effortLevel": "low"
 }
