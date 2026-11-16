@@ -49,7 +49,11 @@
       "Bash(rtk docker push *)",
       "Bash(rtk npm publish *)",
       "Bash(rtk twine upload *)",
-      "Bash(rtk rm -rf *)"
+      "Bash(rtk rm -rf *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(rtk git add *)",
+      "Bash(rtk git commit *)"
     ],
     "deny": [
       "Read(**/.env)",
@@ -82,7 +86,7 @@
       "Bash(rtk git branch *)",
       "Bash(rtk git add *)",
       "Bash(rtk git commit *)",
-      "Bash(npm test *)",
+      "Bash(rtk npm test *)",
       "Bash(rtk npx tsc --noEmit *)",
       "Bash(rtk npx prettier --check *)",
       "Bash(rtk gh pr view *)",
